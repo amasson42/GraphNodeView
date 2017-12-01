@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="GraphNodeView_iOS_" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Aq-MB-TIB" customClass="GraphNodeView" customModule="GraphNodeView_iOS_" customModuleProvider="target">
+                                <rect key="frame" x="8" y="28" width="359" height="593"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jAV-hz-fwy">
+                                <rect key="frame" x="133" y="629" width="108" height="30"/>
+                                <state key="normal" title="Set DataSource"/>
+                                <connections>
+                                    <action selector="setDataSource:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Gmy-rm-MTO"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="jAV-hz-fwy" secondAttribute="bottom" constant="8" id="Ft4-xz-ZPA"/>
+                            <constraint firstItem="jAV-hz-fwy" firstAttribute="top" secondItem="3Aq-MB-TIB" secondAttribute="bottom" constant="8" id="GSh-94-zae"/>
+                            <constraint firstItem="3Aq-MB-TIB" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="K6O-eH-nzd"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="3Aq-MB-TIB" secondAttribute="trailing" constant="8" id="RfT-g2-hE8"/>
+                            <constraint firstItem="3Aq-MB-TIB" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="8" id="cyU-ff-KXn"/>
+                            <constraint firstItem="jAV-hz-fwy" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="zuv-hS-nUS"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="graphNodeView" destination="3Aq-MB-TIB" id="3LG-Nf-Pzj"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="68" y="42"/>
+        </scene>
+    </scenes>
+</document>

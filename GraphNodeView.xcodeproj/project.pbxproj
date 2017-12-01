@@ -11,43 +11,31 @@
 		8E47598D1FD160D0003473F5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E47598C1FD160D0003473F5 /* ViewController.swift */; };
 		8E47598F1FD160D0003473F5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E47598E1FD160D0003473F5 /* Assets.xcassets */; };
 		8E4759921FD160D0003473F5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E4759901FD160D0003473F5 /* Main.storyboard */; };
-		8E47599E1FD160D0003473F5 /* GraphNodeViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E47599D1FD160D0003473F5 /* GraphNodeViewTests.swift */; };
-		8E4759A91FD160D0003473F5 /* GraphNodeViewUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4759A81FD160D0003473F5 /* GraphNodeViewUITests.swift */; };
 		8E4759B71FD16101003473F5 /* GraphNodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4759B61FD16101003473F5 /* GraphNodeView.swift */; };
+		F60AC51E1FD18C3E008793E2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60AC51D1FD18C3E008793E2 /* AppDelegate.swift */; };
+		F60AC5201FD18C3E008793E2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60AC51F1FD18C3E008793E2 /* ViewController.swift */; };
+		F60AC5231FD18C3E008793E2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F60AC5211FD18C3E008793E2 /* Main.storyboard */; };
+		F60AC5251FD18C3E008793E2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F60AC5241FD18C3E008793E2 /* Assets.xcassets */; };
+		F60AC5281FD18C3E008793E2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F60AC5261FD18C3E008793E2 /* LaunchScreen.storyboard */; };
+		F60AC54A1FD18CAB008793E2 /* GraphNodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4759B61FD16101003473F5 /* GraphNodeView.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		8E47599A1FD160D0003473F5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8E47597F1FD160D0003473F5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8E4759861FD160D0003473F5;
-			remoteInfo = GraphNodeView;
-		};
-		8E4759A51FD160D0003473F5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8E47597F1FD160D0003473F5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8E4759861FD160D0003473F5;
-			remoteInfo = GraphNodeView;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
-		8E4759871FD160D0003473F5 /* GraphNodeView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GraphNodeView.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8E4759871FD160D0003473F5 /* GraphNodeView(mac).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GraphNodeView(mac).app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E47598A1FD160D0003473F5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8E47598C1FD160D0003473F5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		8E47598E1FD160D0003473F5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8E4759911FD160D0003473F5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8E4759931FD160D0003473F5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8E4759941FD160D0003473F5 /* GraphNodeView.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GraphNodeView.entitlements; sourceTree = "<group>"; };
-		8E4759991FD160D0003473F5 /* GraphNodeViewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GraphNodeViewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		8E47599D1FD160D0003473F5 /* GraphNodeViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphNodeViewTests.swift; sourceTree = "<group>"; };
-		8E47599F1FD160D0003473F5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8E4759A41FD160D0003473F5 /* GraphNodeViewUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GraphNodeViewUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		8E4759A81FD160D0003473F5 /* GraphNodeViewUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphNodeViewUITests.swift; sourceTree = "<group>"; };
-		8E4759AA1FD160D0003473F5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8E4759B61FD16101003473F5 /* GraphNodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphNodeView.swift; sourceTree = "<group>"; };
+		8E4759B61FD16101003473F5 /* GraphNodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphNodeView.swift; sourceTree = "<group>"; usesTabs = 1; };
+		F60AC51B1FD18C3E008793E2 /* GraphNodeView(iOS).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GraphNodeView(iOS).app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F60AC51D1FD18C3E008793E2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		F60AC51F1FD18C3E008793E2 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		F60AC5221FD18C3E008793E2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		F60AC5241FD18C3E008793E2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F60AC5271FD18C3E008793E2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		F60AC5291FD18C3E008793E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,14 +46,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8E4759961FD160D0003473F5 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8E4759A11FD160D0003473F5 /* Frameworks */ = {
+		F60AC5181FD18C3E008793E2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -78,9 +59,9 @@
 		8E47597E1FD160D0003473F5 = {
 			isa = PBXGroup;
 			children = (
-				8E4759891FD160D0003473F5 /* GraphNodeView */,
-				8E47599C1FD160D0003473F5 /* GraphNodeViewTests */,
-				8E4759A71FD160D0003473F5 /* GraphNodeViewUITests */,
+				F60AC5491FD18C4D008793E2 /* GraphNodeViewCommun */,
+				8E4759891FD160D0003473F5 /* GraphNodeView(mac) */,
+				F60AC51C1FD18C3E008793E2 /* GraphNodeView(iOS) */,
 				8E4759881FD160D0003473F5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,51 +69,52 @@
 		8E4759881FD160D0003473F5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8E4759871FD160D0003473F5 /* GraphNodeView.app */,
-				8E4759991FD160D0003473F5 /* GraphNodeViewTests.xctest */,
-				8E4759A41FD160D0003473F5 /* GraphNodeViewUITests.xctest */,
+				8E4759871FD160D0003473F5 /* GraphNodeView(mac).app */,
+				F60AC51B1FD18C3E008793E2 /* GraphNodeView(iOS).app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8E4759891FD160D0003473F5 /* GraphNodeView */ = {
+		8E4759891FD160D0003473F5 /* GraphNodeView(mac) */ = {
 			isa = PBXGroup;
 			children = (
 				8E47598A1FD160D0003473F5 /* AppDelegate.swift */,
 				8E47598C1FD160D0003473F5 /* ViewController.swift */,
-				8E4759B61FD16101003473F5 /* GraphNodeView.swift */,
 				8E47598E1FD160D0003473F5 /* Assets.xcassets */,
 				8E4759901FD160D0003473F5 /* Main.storyboard */,
 				8E4759931FD160D0003473F5 /* Info.plist */,
 				8E4759941FD160D0003473F5 /* GraphNodeView.entitlements */,
 			);
-			path = GraphNodeView;
+			path = "GraphNodeView(mac)";
 			sourceTree = "<group>";
 		};
-		8E47599C1FD160D0003473F5 /* GraphNodeViewTests */ = {
+		F60AC51C1FD18C3E008793E2 /* GraphNodeView(iOS) */ = {
 			isa = PBXGroup;
 			children = (
-				8E47599D1FD160D0003473F5 /* GraphNodeViewTests.swift */,
-				8E47599F1FD160D0003473F5 /* Info.plist */,
+				F60AC51D1FD18C3E008793E2 /* AppDelegate.swift */,
+				F60AC51F1FD18C3E008793E2 /* ViewController.swift */,
+				F60AC5211FD18C3E008793E2 /* Main.storyboard */,
+				F60AC5241FD18C3E008793E2 /* Assets.xcassets */,
+				F60AC5261FD18C3E008793E2 /* LaunchScreen.storyboard */,
+				F60AC5291FD18C3E008793E2 /* Info.plist */,
 			);
-			path = GraphNodeViewTests;
+			path = "GraphNodeView(iOS)";
 			sourceTree = "<group>";
 		};
-		8E4759A71FD160D0003473F5 /* GraphNodeViewUITests */ = {
+		F60AC5491FD18C4D008793E2 /* GraphNodeViewCommun */ = {
 			isa = PBXGroup;
 			children = (
-				8E4759A81FD160D0003473F5 /* GraphNodeViewUITests.swift */,
-				8E4759AA1FD160D0003473F5 /* Info.plist */,
+				8E4759B61FD16101003473F5 /* GraphNodeView.swift */,
 			);
-			path = GraphNodeViewUITests;
+			path = GraphNodeViewCommun;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8E4759861FD160D0003473F5 /* GraphNodeView */ = {
+		8E4759861FD160D0003473F5 /* GraphNodeView(mac) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8E4759AD1FD160D0003473F5 /* Build configuration list for PBXNativeTarget "GraphNodeView" */;
+			buildConfigurationList = 8E4759AD1FD160D0003473F5 /* Build configuration list for PBXNativeTarget "GraphNodeView(mac)" */;
 			buildPhases = (
 				8E4759831FD160D0003473F5 /* Sources */,
 				8E4759841FD160D0003473F5 /* Frameworks */,
@@ -142,46 +124,27 @@
 			);
 			dependencies = (
 			);
-			name = GraphNodeView;
+			name = "GraphNodeView(mac)";
 			productName = GraphNodeView;
-			productReference = 8E4759871FD160D0003473F5 /* GraphNodeView.app */;
+			productReference = 8E4759871FD160D0003473F5 /* GraphNodeView(mac).app */;
 			productType = "com.apple.product-type.application";
 		};
-		8E4759981FD160D0003473F5 /* GraphNodeViewTests */ = {
+		F60AC51A1FD18C3E008793E2 /* GraphNodeView(iOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8E4759B01FD160D0003473F5 /* Build configuration list for PBXNativeTarget "GraphNodeViewTests" */;
+			buildConfigurationList = F60AC5401FD18C3E008793E2 /* Build configuration list for PBXNativeTarget "GraphNodeView(iOS)" */;
 			buildPhases = (
-				8E4759951FD160D0003473F5 /* Sources */,
-				8E4759961FD160D0003473F5 /* Frameworks */,
-				8E4759971FD160D0003473F5 /* Resources */,
+				F60AC5171FD18C3E008793E2 /* Sources */,
+				F60AC5181FD18C3E008793E2 /* Frameworks */,
+				F60AC5191FD18C3E008793E2 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				8E47599B1FD160D0003473F5 /* PBXTargetDependency */,
 			);
-			name = GraphNodeViewTests;
-			productName = GraphNodeViewTests;
-			productReference = 8E4759991FD160D0003473F5 /* GraphNodeViewTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		8E4759A31FD160D0003473F5 /* GraphNodeViewUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 8E4759B31FD160D0003473F5 /* Build configuration list for PBXNativeTarget "GraphNodeViewUITests" */;
-			buildPhases = (
-				8E4759A01FD160D0003473F5 /* Sources */,
-				8E4759A11FD160D0003473F5 /* Frameworks */,
-				8E4759A21FD160D0003473F5 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				8E4759A61FD160D0003473F5 /* PBXTargetDependency */,
-			);
-			name = GraphNodeViewUITests;
-			productName = GraphNodeViewUITests;
-			productReference = 8E4759A41FD160D0003473F5 /* GraphNodeViewUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
+			name = "GraphNodeView(iOS)";
+			productName = "GraphNodeView(iOS)";
+			productReference = F60AC51B1FD18C3E008793E2 /* GraphNodeView(iOS).app */;
+			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
@@ -197,15 +160,9 @@
 						CreatedOnToolsVersion = 9.1;
 						ProvisioningStyle = Automatic;
 					};
-					8E4759981FD160D0003473F5 = {
+					F60AC51A1FD18C3E008793E2 = {
 						CreatedOnToolsVersion = 9.1;
 						ProvisioningStyle = Automatic;
-						TestTargetID = 8E4759861FD160D0003473F5;
-					};
-					8E4759A31FD160D0003473F5 = {
-						CreatedOnToolsVersion = 9.1;
-						ProvisioningStyle = Automatic;
-						TestTargetID = 8E4759861FD160D0003473F5;
 					};
 				};
 			};
@@ -222,9 +179,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8E4759861FD160D0003473F5 /* GraphNodeView */,
-				8E4759981FD160D0003473F5 /* GraphNodeViewTests */,
-				8E4759A31FD160D0003473F5 /* GraphNodeViewUITests */,
+				8E4759861FD160D0003473F5 /* GraphNodeView(mac) */,
+				F60AC51A1FD18C3E008793E2 /* GraphNodeView(iOS) */,
 			);
 		};
 /* End PBXProject section */
@@ -239,17 +195,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8E4759971FD160D0003473F5 /* Resources */ = {
+		F60AC5191FD18C3E008793E2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8E4759A21FD160D0003473F5 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				F60AC5281FD18C3E008793E2 /* LaunchScreen.storyboard in Resources */,
+				F60AC5251FD18C3E008793E2 /* Assets.xcassets in Resources */,
+				F60AC5231FD18C3E008793E2 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,36 +218,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8E4759951FD160D0003473F5 /* Sources */ = {
+		F60AC5171FD18C3E008793E2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8E47599E1FD160D0003473F5 /* GraphNodeViewTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8E4759A01FD160D0003473F5 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8E4759A91FD160D0003473F5 /* GraphNodeViewUITests.swift in Sources */,
+				F60AC5201FD18C3E008793E2 /* ViewController.swift in Sources */,
+				F60AC54A1FD18CAB008793E2 /* GraphNodeView.swift in Sources */,
+				F60AC51E1FD18C3E008793E2 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		8E47599B1FD160D0003473F5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8E4759861FD160D0003473F5 /* GraphNodeView */;
-			targetProxy = 8E47599A1FD160D0003473F5 /* PBXContainerItemProxy */;
-		};
-		8E4759A61FD160D0003473F5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8E4759861FD160D0003473F5 /* GraphNodeView */;
-			targetProxy = 8E4759A51FD160D0003473F5 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		8E4759901FD160D0003473F5 /* Main.storyboard */ = {
@@ -304,6 +237,22 @@
 				8E4759911FD160D0003473F5 /* Base */,
 			);
 			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		F60AC5211FD18C3E008793E2 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F60AC5221FD18C3E008793E2 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		F60AC5261FD18C3E008793E2 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F60AC5271FD18C3E008793E2 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -419,12 +368,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = GraphNodeView/GraphNodeView.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "GraphNodeView(mac)/GraphNodeView.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = V82658887T;
-				INFOPLIST_FILE = GraphNodeView/Info.plist;
+				INFOPLIST_FILE = "GraphNodeView(mac)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = giantwow.GraphNodeView;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -435,81 +385,53 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = GraphNodeView/GraphNodeView.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "GraphNodeView(mac)/GraphNodeView.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = V82658887T;
-				INFOPLIST_FILE = GraphNodeView/Info.plist;
+				INFOPLIST_FILE = "GraphNodeView(mac)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = giantwow.GraphNodeView;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
-		8E4759B11FD160D0003473F5 /* Debug */ = {
+		F60AC5411FD18C3E008793E2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = V82658887T;
-				INFOPLIST_FILE = GraphNodeViewTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = giantwow.GraphNodeViewTests;
+				INFOPLIST_FILE = "GraphNodeView(iOS)/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "giantwow.GraphNodeView-iOS-";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				SWIFT_VERSION = 4.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GraphNodeView.app/Contents/MacOS/GraphNodeView";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		8E4759B21FD160D0003473F5 /* Release */ = {
+		F60AC5421FD18C3E008793E2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = V82658887T;
-				INFOPLIST_FILE = GraphNodeViewTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = giantwow.GraphNodeViewTests;
+				INFOPLIST_FILE = "GraphNodeView(iOS)/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "giantwow.GraphNodeView-iOS-";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				SWIFT_VERSION = 4.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GraphNodeView.app/Contents/MacOS/GraphNodeView";
-			};
-			name = Release;
-		};
-		8E4759B41FD160D0003473F5 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = V82658887T;
-				INFOPLIST_FILE = GraphNodeViewUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = giantwow.GraphNodeViewUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
-				TEST_TARGET_NAME = GraphNodeView;
-			};
-			name = Debug;
-		};
-		8E4759B51FD160D0003473F5 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = V82658887T;
-				INFOPLIST_FILE = GraphNodeViewUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = giantwow.GraphNodeViewUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
-				TEST_TARGET_NAME = GraphNodeView;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
@@ -525,7 +447,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8E4759AD1FD160D0003473F5 /* Build configuration list for PBXNativeTarget "GraphNodeView" */ = {
+		8E4759AD1FD160D0003473F5 /* Build configuration list for PBXNativeTarget "GraphNodeView(mac)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8E4759AE1FD160D0003473F5 /* Debug */,
@@ -534,20 +456,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8E4759B01FD160D0003473F5 /* Build configuration list for PBXNativeTarget "GraphNodeViewTests" */ = {
+		F60AC5401FD18C3E008793E2 /* Build configuration list for PBXNativeTarget "GraphNodeView(iOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				8E4759B11FD160D0003473F5 /* Debug */,
-				8E4759B21FD160D0003473F5 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		8E4759B31FD160D0003473F5 /* Build configuration list for PBXNativeTarget "GraphNodeViewUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				8E4759B41FD160D0003473F5 /* Debug */,
-				8E4759B51FD160D0003473F5 /* Release */,
+				F60AC5411FD18C3E008793E2 /* Debug */,
+				F60AC5421FD18C3E008793E2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
