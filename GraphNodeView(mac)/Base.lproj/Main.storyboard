@@ -739,12 +739,25 @@
                                     <action selector="setDataSource:" target="XfG-lQ-9wD" id="RdT-kF-je8"/>
                                 </connections>
                             </button>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Y1q-Pl-tir">
+                                <rect key="frame" x="494" y="10" width="84" height="18"/>
+                                <buttonCell key="cell" type="check" title="Flat graph" bezelStyle="regularSquare" imagePosition="left" inset="2" id="aje-a9-mW9">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="setFlatGraph:" target="XfG-lQ-9wD" id="g5g-Br-aGU"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="Akl-rk-und" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" id="Xwj-8k-sRq"/>
                             <constraint firstItem="Akl-rk-und" firstAttribute="top" secondItem="rLn-TY-KWV" secondAttribute="bottom" constant="10" id="ZQx-uC-kYy"/>
+                            <constraint firstItem="Y1q-Pl-tir" firstAttribute="leading" secondItem="Akl-rk-und" secondAttribute="trailing" constant="8" id="bje-t3-MYW"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Y1q-Pl-tir" secondAttribute="trailing" constant="8" id="fdp-LQ-Gf6"/>
                             <constraint firstAttribute="trailing" secondItem="rLn-TY-KWV" secondAttribute="trailing" constant="10" id="gVg-N2-Hn2"/>
                             <constraint firstItem="rLn-TY-KWV" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="2" id="jbk-YS-6bB"/>
+                            <constraint firstAttribute="bottom" secondItem="Y1q-Pl-tir" secondAttribute="bottom" constant="12" id="lov-B3-4fQ"/>
                             <constraint firstItem="rLn-TY-KWV" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="10" id="n8d-RK-Pio"/>
                             <constraint firstAttribute="bottom" secondItem="Akl-rk-und" secondAttribute="bottom" constant="8" id="uiy-yx-waE"/>
                         </constraints>

@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import SceneKit
 
 class ViewController: NSViewController {
     
@@ -24,6 +25,10 @@ class ViewController: NSViewController {
         }
     }
     
+    @IBAction func setFlatGraph(_ sender: NSButton) {
+        graphNodeView.flatGraph = sender.state == .on
+    }
+    
     @IBAction func setDataSource(_ sender: Any) {
         graphNodeView.dataSource = self
         graphNodeView.delegate = self
@@ -39,20 +44,81 @@ extension ViewController: GraphNodeViewDataSource {
         case "Bravo":
             return ["Charlie"]
         case "Charlie":
-            return ["Bravo"]
-        default:
             return []
+        case "Delta":
+            return ["Alpha", "Bravo", "Charlie"]
+        default:
+            return ["Delta"]
         }
     }
     
     func namesOfAllNodes(in graphNodeView: GraphNodeView) -> [String] {
-        return ["Alpha", "Bravo", "Charlie"]
+        var comp = 0
+        defer {
+            print("comparaisons: ", comp)
+        }
+        return ["Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf"].sorted {
+            _,_ in
+            comp += 1
+            return arc4random() % 2 == 0
+        }
     }
     
+    func graphNodeView(_ graphNodeView: GraphNodeView, modelForNodeNamed name: String) -> SCNNode {
+        let geometry = SCNBox(width: 1.0, height: 1.0, length: 0.2, chamferRadius: 0.1)
+        let color: NSColor
+        switch name {
+        case "Alpha":
+            color = NSColor.red
+        case "Bravo":
+            color = NSColor.green
+        case "Charlie":
+            color = NSColor.blue
+        case "Delta":
+            color = NSColor.yellow
+        default:
+            color = NSColor.white
+        }
+        geometry.materials.first?.diffuse.contents = color
+        let node = SCNNode(geometry: geometry)
+        
+        let textGeo = SCNText(string: name, extrusionDepth: 1.0)
+        textGeo.materials.first?.diffuse.contents = color.blended(withFraction: 0.6, of: .black)
+        let textNode = SCNNode(geometry: textGeo)
+        let scaling = SCNFloat(0.5 / textNode.boundingSphere.radius)
+        textNode.scale = SCNVector3(x: scaling, y: scaling, z: scaling)
+        textNode.position = SCNVector3(x: -0.5, y: -0.5, z: 0.1)
+        node.addChildNode(textNode)
+        
+        return node
+    }
+    
+    func graphNodeView(_ graphNodeView: GraphNodeView,
+                       linkPropertyForLinkFromNodeNamed nodeSrc: String,
+                       toNodeNamed nodeDst: String) -> GraphNodeView.LinkProperty? {
+        var property = GraphNodeView.LinkProperty()
+        property.arrowShaped = true
+        property.lineShape = .square
+        switch nodeDst {
+        case "Alpha":
+            property.color = .red
+        case "Bravo":
+            property.color = .green
+        case "Charlie":
+            property.color = .blue
+        case "Delta":
+            property.color = .yellow
+        default:
+            break
+        }
+        return property
+    }
 }
 
 extension ViewController: GraphNodeViewDelegate {
-    
+    func graphNodeView(_ graphNodeView: GraphNodeView, selectedNodeNamed name: String) {
+        print("touched node named:", name)
+    }
 }
 
 extension ViewController: NSTableViewDataSource {

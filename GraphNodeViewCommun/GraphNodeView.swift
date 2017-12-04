@@ -21,29 +21,38 @@ import GameplayKit
 
 protocol GraphNodeViewDataSource: class {
 	func namesOfAllNodes(in graphNodeView: GraphNodeView) -> [String]
-	func graphNodeView(_ graphNodeView: GraphNodeView, linksForNodeNamed name: String) -> [String]
+	func graphNodeView(_ graphNodeView: GraphNodeView, linksForNodeNamed: String) -> [String]
+	func graphNodeView(_ graphNodeView: GraphNodeView, modelForNodeNamed: String) -> SCNNode
+	func graphNodeView(_ graphNodeView: GraphNodeView, informationAboutNodeNamed: String) -> [String: Any]
+	func graphNodeView(_ graphNodeView: GraphNodeView, linkPropertyForLinkFromNodeNamed: String, toNodeNamed: String) -> GraphNodeView.LinkProperty?
 }
 
 extension GraphNodeViewDataSource {
-	func graphNodeView(_ graphNodeView: GraphNodeView, modelForNodenNamed name: String) -> SCNNode {
+	func graphNodeView(_ graphNodeView: GraphNodeView, modelForNodeNamed name: String) -> SCNNode {
 		let geometry = SCNSphere(radius: 0.5)
 		let node = SCNNode(geometry: geometry)
 		return node
 	}
 	
-	func graphNodeView(_ graphNodeView: GraphNodeView, informationAboutNodeNamed named: String) -> [String: Any] {
+	func graphNodeView(_ graphNodeView: GraphNodeView, informationAboutNodeNamed name: String) -> [String: Any] {
 		return [:]
 	}
 	
 	func graphNodeView(_ graphNodeView: GraphNodeView,
-					   linkPropertyForLinkFromNode nodeSrc: String,
-					   to nodeDst: String) -> GraphNodeView.LinkProperty? {
+					   linkPropertyForLinkFromNodeNamed nodeSrc: String,
+					   toNodeNamed nodeDst: String) -> GraphNodeView.LinkProperty? {
 		return nil
 	}
 }
 
 protocol GraphNodeViewDelegate: class {
-	
+	func graphNodeView(_ graphNodeView: GraphNodeView, selectedNodeNamed name: String)
+}
+
+extension GraphNodeViewDelegate {
+	func graphNodeView(_ graphNodeView: GraphNodeView, selectedNodeNamed name: String) {
+		
+	}
 }
 
 class GraphNodeView: CPView {
@@ -88,11 +97,13 @@ class GraphNodeView: CPView {
 	
 	private var agents: [String: GKAgent] = [:]
 	
-	struct Settings {
-		var canEscapeFrom2DPlan: Bool
+	var flatGraph: Bool = false {
+		didSet {
+			if oldValue != flatGraph {
+				self.createAgents()
+			}
+		}
 	}
-	
-	public var settings = Settings(canEscapeFrom2DPlan: true)
 	
 	// MARK: Initialisation
 	override init(frame frameRect: CGRect) {
@@ -113,6 +124,12 @@ class GraphNodeView: CPView {
 		self.sceneView = sceneView
 		self.sceneView.delegate = self
 		self.sceneView.isPlaying = true
+		
+		#if os(macOS)
+			self.addGestureRecognizer(NSClickGestureRecognizer(target: self, action: #selector(handleClick(_:))))
+		#else
+			self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap(_:))))
+		#endif
 		
 		self.initContent()
 	}
@@ -142,6 +159,28 @@ extension GraphNodeView {
 }
 
 // MARK: All of GameplayKit
+extension GKAgent {
+	var position3d: float3 {
+		get {
+			if let agent2d = self as? GKAgent2D {
+				return float3(agent2d.position.x, agent2d.position.y, 0)
+			} else if let agent3d = self as? GKAgent3D {
+				return agent3d.position
+			} else {
+				return float3(0, 0, 0)
+			}
+		}
+		set {
+			if let agent2d = self as? GKAgent2D {
+				agent2d.position.x = newValue.x
+				agent2d.position.y = newValue.y
+			} else if let agent3d = self as? GKAgent3D {
+				agent3d.position = newValue
+			}
+		}
+	}
+}
+
 extension GraphNodeView {
 	
 	private func initAgents() {
@@ -152,31 +191,61 @@ extension GraphNodeView {
 		self.agents.removeAll()
 	}
 	
+	private func createNewAgent() -> GKAgent {
+		let agent: GKAgent
+		if self.flatGraph {
+			let agent2d = GKAgent2D()
+			agent = agent2d
+		} else {
+			let agent3d = GKAgent3D()
+			agent = agent3d
+		}
+		agent.radius = 10.0
+		return agent
+	}
+	
 	private func createAgents() {
+		
 		let originAgent = GKAgent()
-		var agents: [GKAgent] = []
+		
+		var newAgents: [GKAgent] = []
 		var pos: Float = 0.0
 		for nodeName in nodeNames {
-			let agent = settings.canEscapeFrom2DPlan ? GKAgent3D() : GKAgent2D()
-			(agent as! GKAgent3D).position.x = pos
-			pos += 1.0
+			let agent = self.createNewAgent()
+			if let previousAgent = self.agents[nodeName] {
+				agent.position3d = previousAgent.position3d
+			} else {
+				agent.position3d = float3(pos, 0, 0)
+				pos += 1.0
+			}
 			self.agents[nodeName] = agent
-			agents.append(agent)
+			newAgents.append(agent)
 		}
 		
-		let separateGoal = GKGoal(toSeparateFrom: agents, maxDistance: 5, maxAngle: 0)
-		let idleGoal = GKGoal(toReachTargetSpeed: 0)
-		let compactingGoal = GKGoal(toSeekAgent: originAgent)
-		let behavior = GKBehavior(weightedGoals: [
-			separateGoal: 1.6,
-			idleGoal: 1.0,
-			compactingGoal: 0.1,
-			])
-		// TODO: seek linked agents
-		for agent in agents {
+		for (nodeName, agent) in self.agents {
+			
+			let separateGoal = GKGoal(toSeparateFrom: newAgents, maxDistance: 10, maxAngle: .pi * 2)
+			let idleGoal = GKGoal(toReachTargetSpeed: 0)
+			let compactingGoal = GKGoal(toSeekAgent: originAgent)
+			
+			var linksAgentsGoal: [GKGoal] = []
+			for link in self.linksNames[nodeName] ?? [] {
+				if let linkAgent = self.agents[link] {
+					linksAgentsGoal.append(GKGoal(toSeekAgent: linkAgent))
+				}
+			}
+			
+			let behavior = GKBehavior(weightedGoals: [
+				separateGoal: 10.0,
+				idleGoal: 1.0,
+				compactingGoal: 2.0,
+				])
+			for seekGoal in linksAgentsGoal {
+				behavior.setWeight(0.4, for: seekGoal)
+			}
 			agent.behavior = behavior
-			agent.radius = 0.5
 		}
+		
 	}
 	
 	private func agentsUpdatePositions(withDeltaTime deltaTime: TimeInterval) {
@@ -187,6 +256,29 @@ extension GraphNodeView {
 }
 
 // MARK: All of Scene
+
+extension SCNNode {
+	
+	/**
+	Evalutate if the node is recursively a child of the target node.
+	If it's the case, it return the direct child of the target containing self.
+	If not return nil
+	- parameters:
+	  - node: target node
+	*/
+	func isIn(node: SCNNode) -> SCNNode? {
+		if let parent = self.parent {
+			if parent === node {
+				return self
+			} else {
+				return parent.isIn(node: node)
+			}
+		} else {
+			return nil
+		}
+	}
+}
+
 extension GraphNodeView {
 	
 	private func initScene() {
@@ -222,12 +314,11 @@ extension GraphNodeView {
 			if let node = self.nodeModels[nodeName] {
 				self.sceneAdd(node: node, forName: nodeName)
 			}
-		}
-	}
-	
-	private func sceneUpdatePositions() {
-		for nodeName in nodeNames {
-			self.sceneUpdatePosition(ofNodeNamed: nodeName)
+			if let linkNames = self.linksNames[nodeName] {
+				for linkName in linkNames {
+					self.sceneAdd(linkFrom: nodeName, to: linkName)
+				}
+			}
 		}
 	}
 	
@@ -268,8 +359,10 @@ extension GraphNodeView {
 		
 		// creating line node
 		let lineNode = SCNNode(geometry: lineGeometry)
-		lineNode.scale.y = SCNFloat(property.endingDistance - property.startingDistance)
-		lineNode.position.y = SCNFloat(property.startingDistance)
+		let endingDistance = property.endingDistance - (property.arrowShaped ? 0.2 : 0.0)
+		lineNode.scale.y = SCNFloat(endingDistance - property.startingDistance)
+		lineNode.position.y = SCNFloat((endingDistance - property.startingDistance) / 2
+			+ property.startingDistance)
 		linkNode.addChildNode(lineNode)
 		
 		// creating arrowhead
@@ -291,11 +384,22 @@ extension GraphNodeView {
 			}
 			arrowGeometry.materials.first?.diffuse.contents = property.color
 			let arrowNode = SCNNode(geometry: arrowGeometry)
-			arrowNode.position.y = SCNFloat(property.endingDistance - 0.2)
+			arrowNode.position.y = SCNFloat(endingDistance)
 			linkNode.addChildNode(arrowNode)
 		}
 		
 		self.linksNode.addChildNode(linkNode)
+	}
+	
+	private func sceneUpdatePositions() {
+		for nodeName in nodeNames {
+			self.sceneUpdatePosition(ofNodeNamed: nodeName)
+			if let linkNames = self.linksNames[nodeName] {
+				for linkName in linkNames {
+					self.sceneUpdatePosition(ofLinkFromNodeNamed: nodeName, toNodeNamed: linkName)
+				}
+			}
+		}
 	}
 	
 	private func sceneUpdatePosition(ofNodeNamed name: String) {
@@ -308,12 +412,35 @@ extension GraphNodeView {
 									   y: SCNFloat(agent2d.position.y),
 									   z: 0)
 		} else if let agent3d = agent as? GKAgent3D {
-			print(agent3d.position)
 			node.position = SCNVector3(x: SCNFloat(agent3d.position.x),
 									   y: SCNFloat(agent3d.position.y),
 									   z: SCNFloat(agent3d.position.z))
 		}
-		print(node.position)
+	}
+	
+	private func sceneUpdatePosition(ofLinkFromNodeNamed nameSrc: String, toNodeNamed nameDst: String) {
+		guard let nodeSrc = self.nodesNode.childNode(withName: nameSrc, recursively: false),
+			let nodeDst = self.nodesNode.childNode(withName: nameDst, recursively: false),
+			let nodeLink = self.linksNode.childNode(withName: nameSrc + "-" + nameDst, recursively: false)
+			else {
+				return
+		}
+		
+		let v = SCNVector3(x: nodeDst.position.x - nodeSrc.position.x,
+						   y: nodeDst.position.y - nodeSrc.position.y,
+						   z: nodeDst.position.z - nodeSrc.position.z)
+		
+		let distance = sqrt((v.x * v.x) + (v.y * v.y) + (v.z * v.z))
+		nodeLink.position = SCNVector3(x: nodeSrc.position.x + 0.5 * v.x / distance,
+									   y: nodeSrc.position.y + 0.5 * v.y / distance,
+									   z: nodeSrc.position.z + 0.5 * v.z / distance)
+		
+		let yaw = atan2(v.y, v.x) + .pi / 2
+		let pitch = atan2(sqrt(v.x * v.x + v.y * v.y), v.z) + .pi / 2
+		
+		nodeLink.eulerAngles.x = pitch
+		nodeLink.eulerAngles.z = yaw
+		nodeLink.scale.y = distance - 1.0
 	}
 }
 
@@ -332,16 +459,17 @@ extension GraphNodeView {
 		}
 		self.nodeNames = dataSource.namesOfAllNodes(in: self)
 		for nodeName in nodeNames {
-			let node = dataSource.graphNodeView(self, modelForNodenNamed: nodeName)
+			let node = dataSource.graphNodeView(self, modelForNodeNamed: nodeName)
 			self.nodeModels[nodeName] = node
 		}
 		for nodeName in nodeNames {
-			let links = dataSource.graphNodeView(self, linksForNodeNamed: nodeName)
-			self.linksNames[nodeName] = links
-			for link in links {
-				if let property = dataSource.graphNodeView(self, linkPropertyForLinkFromNode: nodeName, to: link) {
-					let linkName = nodeName + "-" + link
-					self.linksProperty[linkName] = property
+			let linkNames = dataSource.graphNodeView(self, linksForNodeNamed: nodeName)
+			self.linksNames[nodeName] = linkNames
+			for linkName in linkNames {
+				if let property = dataSource.graphNodeView(self,
+														   linkPropertyForLinkFromNodeNamed: nodeName,
+														   toNodeNamed: linkName) {
+					self.linksProperty[nodeName + "-" + linkName] = property
 				}
 			}
 		}
@@ -349,6 +477,48 @@ extension GraphNodeView {
 	}
 	
 }
+
+// MARK: Calls to delegate
+
+extension GraphNodeView {
+	
+	func touchSceneViewAt(point: CGPoint) {
+		let hits = self.sceneView.hitTest(point, options: [:])
+		let touchedNode: SCNNode? = {
+			for hit in hits {
+				if let node = hit.node.isIn(node: self.nodesNode) {
+					return node
+				}
+			}
+			return nil
+		}()
+		if let touchedNodeName = touchedNode?.name {
+			self.delegate?.graphNodeView(self, selectedNodeNamed: touchedNodeName)
+		}
+	}
+}
+
+// MARK: Events macOS
+#if os(macOS)
+	extension GraphNodeView {
+		
+		@objc func handleClick(_ gestureReconizer: NSGestureRecognizer) {
+			let position = gestureReconizer.location(in: self.sceneView)
+			self.touchSceneViewAt(point: position)
+		}
+	}
+#endif
+
+// MARK: Events iOS
+#if os(iOS)
+	extension GraphNodeView {
+		
+		@objc func handleTap(_ gestureReconizer: UIGestureRecognizer) {
+			let position = gestureReconizer.location(in: self.sceneView)
+			self.touchSceneViewAt(point: position)
+		}
+	}
+#endif
 
 extension GraphNodeView: SCNSceneRendererDelegate {
 	
