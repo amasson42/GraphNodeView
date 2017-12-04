@@ -20,8 +20,8 @@ import GameplayKit
 #endif
 
 protocol GraphNodeViewDataSource: class {
-	func namesOfAllNodes(in graphNodeView: GraphNodeView) -> [String]
-	func graphNodeView(_ graphNodeView: GraphNodeView, linksForNodeNamed: String) -> [String]
+	func namesOfAllNodes(in graphNodeView: GraphNodeView) -> Set<String>
+	func graphNodeView(_ graphNodeView: GraphNodeView, linksForNodeNamed: String) -> Set<String>
 	func graphNodeView(_ graphNodeView: GraphNodeView, modelForNodeNamed: String) -> SCNNode
 	func graphNodeView(_ graphNodeView: GraphNodeView, informationAboutNodeNamed: String) -> [String: Any]
 	func graphNodeView(_ graphNodeView: GraphNodeView, linkPropertyForLinkFromNodeNamed: String, toNodeNamed: String) -> GraphNodeView.LinkProperty?
@@ -57,6 +57,13 @@ extension GraphNodeViewDelegate {
 
 class GraphNodeView: CPView {
 	
+	struct Constants {
+		static let distanceBetweenNodes: Float = 10.0
+		static let arrowHeadPercentOccupation: Float = 0.1
+		static let linkerChar = "-"
+		private init() {}
+	}
+	
 	weak var dataSource: GraphNodeViewDataSource? {
 		didSet {
 			self.reloadData()
@@ -66,9 +73,9 @@ class GraphNodeView: CPView {
 	weak var delegate: GraphNodeViewDelegate?
 	
 	// MARK: dataSource informations
-	private var nodeNames: [String] = []
+	private var nodeNames: Set<String> = []
 	private var nodeModels: [String: SCNNode] = [:]
-	private var linksNames: [String: [String]] = [:]
+	private var linksNames: [String: Set<String>] = [:]
 	
 	// MARK: Scene uses
 	private var lastUpdateTime: TimeInterval?
@@ -156,6 +163,11 @@ extension GraphNodeView {
 		self.createScene()
 		self.createAgents()
 	}
+	
+	private func createOneContent(forNode name: String) {
+		self.createSceneNode(named: name)
+		self.createAgents()
+	}
 }
 
 // MARK: All of GameplayKit
@@ -200,7 +212,7 @@ extension GraphNodeView {
 			let agent3d = GKAgent3D()
 			agent = agent3d
 		}
-		agent.radius = 10.0
+		agent.radius = Constants.distanceBetweenNodes
 		return agent
 	}
 	
@@ -224,7 +236,9 @@ extension GraphNodeView {
 		
 		for (nodeName, agent) in self.agents {
 			
-			let separateGoal = GKGoal(toSeparateFrom: newAgents, maxDistance: 10, maxAngle: .pi * 2)
+			let separateGoal = GKGoal(toSeparateFrom: newAgents,
+									  maxDistance: Constants.distanceBetweenNodes,
+									  maxAngle: .pi * 2)
 			let idleGoal = GKGoal(toReachTargetSpeed: 0)
 			let compactingGoal = GKGoal(toSeekAgent: originAgent)
 			
@@ -235,6 +249,7 @@ extension GraphNodeView {
 				}
 			}
 			
+			// MARK: Behavior constants
 			let behavior = GKBehavior(weightedGoals: [
 				separateGoal: 10.0,
 				idleGoal: 1.0,
@@ -256,7 +271,6 @@ extension GraphNodeView {
 }
 
 // MARK: All of Scene
-
 extension SCNNode {
 	
 	/**
@@ -297,9 +311,10 @@ extension GraphNodeView {
 		sceneView.autoenablesDefaultLighting = true
 		sceneView.showsStatistics = true
 		
+		// MARK: Camera settings
 		let camera = SCNNode()
 		camera.camera = SCNCamera()
-		camera.position.z = 5
+		camera.position.z = 10
 		scene.rootNode.addChildNode(camera)
 		sceneView.pointOfView = camera
 	}
@@ -311,13 +326,17 @@ extension GraphNodeView {
 	
 	private func createScene() {
 		for nodeName in self.nodeNames {
-			if let node = self.nodeModels[nodeName] {
-				self.sceneAdd(node: node, forName: nodeName)
-			}
-			if let linkNames = self.linksNames[nodeName] {
-				for linkName in linkNames {
-					self.sceneAdd(linkFrom: nodeName, to: linkName)
-				}
+			createSceneNode(named: nodeName)
+		}
+	}
+	
+	private func createSceneNode(named nodeName: String) {
+		if let node = self.nodeModels[nodeName] {
+			self.sceneAdd(node: node, forName: nodeName)
+		}
+		if let linkNames = self.linksNames[nodeName] {
+			for linkName in linkNames {
+				self.sceneAdd(linkFrom: nodeName, to: linkName)
 			}
 		}
 	}
@@ -330,11 +349,11 @@ extension GraphNodeView {
 	private func sceneAdd(linkFrom nameSrc: String, to nameDst: String) {
 		
 		let linkNode = SCNNode()
-		linkNode.name = nameSrc + "-" + nameDst
+		linkNode.name = nameSrc + Constants.linkerChar + nameDst
 		
 		// loading property
 		let property: LinkProperty
-		if let customProperty = self.linksProperty[nameSrc + "-" + nameDst] {
+		if let customProperty = self.linksProperty[nameSrc + Constants.linkerChar + nameDst] {
 			property = customProperty
 		} else {
 			property = LinkProperty()
@@ -359,7 +378,8 @@ extension GraphNodeView {
 		
 		// creating line node
 		let lineNode = SCNNode(geometry: lineGeometry)
-		let endingDistance = property.endingDistance - (property.arrowShaped ? 0.2 : 0.0)
+		let endingDistance = property.endingDistance
+			- (property.arrowShaped ? Constants.arrowHeadPercentOccupation : 0.0)
 		lineNode.scale.y = SCNFloat(endingDistance - property.startingDistance)
 		lineNode.position.y = SCNFloat((endingDistance - property.startingDistance) / 2
 			+ property.startingDistance)
@@ -372,15 +392,15 @@ extension GraphNodeView {
 			case .round:
 				arrowGeometry = SCNCone(topRadius: 0,
 										bottomRadius: CGFloat(2 * property.lineWidth),
-										height: 0.2)
+										height: CGFloat(Constants.arrowHeadPercentOccupation))
 			case .square:
 				arrowGeometry = SCNPyramid(width: CGFloat(2 * property.lineWidth),
-										   height: 0.2,
+										   height: CGFloat(Constants.arrowHeadPercentOccupation),
 										   length: CGFloat(2 * property.lineWidth))
 			case .wire:
 				arrowGeometry = SCNCone(topRadius: 0,
 										bottomRadius: CGFloat(2 * property.lineWidth),
-										height: 0.2)
+										height: CGFloat(Constants.arrowHeadPercentOccupation))
 			}
 			arrowGeometry.materials.first?.diffuse.contents = property.color
 			let arrowNode = SCNNode(geometry: arrowGeometry)
@@ -421,7 +441,7 @@ extension GraphNodeView {
 	private func sceneUpdatePosition(ofLinkFromNodeNamed nameSrc: String, toNodeNamed nameDst: String) {
 		guard let nodeSrc = self.nodesNode.childNode(withName: nameSrc, recursively: false),
 			let nodeDst = self.nodesNode.childNode(withName: nameDst, recursively: false),
-			let nodeLink = self.linksNode.childNode(withName: nameSrc + "-" + nameDst, recursively: false)
+			let nodeLink = self.linksNode.childNode(withName: nameSrc + Constants.linkerChar + nameDst, recursively: false)
 			else {
 				return
 		}
@@ -469,13 +489,44 @@ extension GraphNodeView {
 				if let property = dataSource.graphNodeView(self,
 														   linkPropertyForLinkFromNodeNamed: nodeName,
 														   toNodeNamed: linkName) {
-					self.linksProperty[nodeName + "-" + linkName] = property
+					self.linksProperty[nodeName + Constants.linkerChar + linkName] = property
 				}
 			}
 		}
 		self.createContent()
 	}
 	
+	public func reloadNode(named nodeName: String) {
+		guard let dataSource = self.dataSource else {
+			return
+		}
+		
+		if let node = self.nodesNode.childNode(withName: nodeName, recursively: false) {
+			node.removeFromParentNode()
+		}
+		if let linkNames = self.linksNames[nodeName] {
+			for linkName in linkNames {
+				if let node = self.linksNode.childNode(withName: nodeName + Constants.linkerChar + linkName, recursively: false) {
+					node.removeFromParentNode()
+				}
+			}
+		}
+		
+		let node = dataSource.graphNodeView(self, modelForNodeNamed: nodeName)
+		self.nodeModels[nodeName] = node
+		
+		let linkNames = dataSource.graphNodeView(self, linksForNodeNamed: nodeName)
+		self.linksNames[nodeName] = linkNames
+		for linkName in linkNames {
+			if let property = dataSource.graphNodeView(self,
+													   linkPropertyForLinkFromNodeNamed: nodeName,
+													   toNodeNamed: linkName) {
+				self.linksProperty[nodeName + Constants.linkerChar + linkName] = property
+			}
+		}
+		self.createAgents()
+		self.createSceneNode(named: nodeName)
+	}
 }
 
 // MARK: Calls to delegate

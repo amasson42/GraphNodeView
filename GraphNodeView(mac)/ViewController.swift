@@ -37,7 +37,7 @@ class ViewController: NSViewController {
 
 extension ViewController: GraphNodeViewDataSource {
     
-    func graphNodeView(_ graphNodeView: GraphNodeView, linksForNodeNamed name: String) -> [String] {
+    func graphNodeView(_ graphNodeView: GraphNodeView, linksForNodeNamed name: String) -> Set<String> {
         switch name {
         case "Alpha":
             return ["Bravo"]
@@ -52,16 +52,8 @@ extension ViewController: GraphNodeViewDataSource {
         }
     }
     
-    func namesOfAllNodes(in graphNodeView: GraphNodeView) -> [String] {
-        var comp = 0
-        defer {
-            print("comparaisons: ", comp)
-        }
-        return ["Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf"].sorted {
-            _,_ in
-            comp += 1
-            return arc4random() % 2 == 0
-        }
+    func namesOfAllNodes(in graphNodeView: GraphNodeView) -> Set<String> {
+        return ["Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf"]
     }
     
     func graphNodeView(_ graphNodeView: GraphNodeView, modelForNodeNamed name: String) -> SCNNode {
@@ -77,7 +69,7 @@ extension ViewController: GraphNodeViewDataSource {
         case "Delta":
             color = NSColor.yellow
         default:
-            color = NSColor.white
+            color = NSColor.randomColor()
         }
         geometry.materials.first?.diffuse.contents = color
         let node = SCNNode(geometry: geometry)
@@ -109,7 +101,7 @@ extension ViewController: GraphNodeViewDataSource {
         case "Delta":
             property.color = .yellow
         default:
-            break
+            property.color = NSColor.randomColor()
         }
         return property
     }
@@ -118,6 +110,7 @@ extension ViewController: GraphNodeViewDataSource {
 extension ViewController: GraphNodeViewDelegate {
     func graphNodeView(_ graphNodeView: GraphNodeView, selectedNodeNamed name: String) {
         print("touched node named:", name)
+        self.graphNodeView.reloadNode(named: name)
     }
 }
 
