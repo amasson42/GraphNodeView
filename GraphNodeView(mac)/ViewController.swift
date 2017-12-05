@@ -113,9 +113,3 @@ extension ViewController: GraphNodeViewDelegate {
         self.graphNodeView.reloadNode(named: name)
     }
 }
-
-extension ViewController: NSTableViewDataSource {
-    func numberOfRows(in tableView: NSTableView) -> Int {
-        return 0
-    }
-}

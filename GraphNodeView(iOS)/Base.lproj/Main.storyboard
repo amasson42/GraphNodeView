@@ -23,20 +23,28 @@
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jAV-hz-fwy">
-                                <rect key="frame" x="133" y="629" width="108" height="30"/>
+                                <rect key="frame" x="133.5" y="629" width="108" height="30"/>
                                 <state key="normal" title="Set DataSource"/>
                                 <connections>
                                     <action selector="setDataSource:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Gmy-rm-MTO"/>
                                 </connections>
                             </button>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rRK-ce-1uK">
+                                <rect key="frame" x="308" y="628" width="51" height="31"/>
+                                <connections>
+                                    <action selector="setFlatGraph:" destination="BYZ-38-t0r" eventType="valueChanged" id="RTu-wc-e76"/>
+                                </connections>
+                            </switch>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="rRK-ce-1uK" secondAttribute="trailing" constant="18" id="Bb1-Cy-03l"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="jAV-hz-fwy" secondAttribute="bottom" constant="8" id="Ft4-xz-ZPA"/>
                             <constraint firstItem="jAV-hz-fwy" firstAttribute="top" secondItem="3Aq-MB-TIB" secondAttribute="bottom" constant="8" id="GSh-94-zae"/>
                             <constraint firstItem="3Aq-MB-TIB" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="K6O-eH-nzd"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="3Aq-MB-TIB" secondAttribute="trailing" constant="8" id="RfT-g2-hE8"/>
                             <constraint firstItem="3Aq-MB-TIB" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="8" id="cyU-ff-KXn"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="rRK-ce-1uK" secondAttribute="bottom" constant="8" id="o7t-9v-vBN"/>
                             <constraint firstItem="jAV-hz-fwy" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="zuv-hS-nUS"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>

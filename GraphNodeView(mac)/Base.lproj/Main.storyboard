@@ -763,7 +763,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="graphNodeView" destination="18F-ev-6ge" id="xN9-iz-8Gw"/>
+                        <outlet property="graphNodeView" destination="18F-ev-6ge" id="hjk-kQ-uDa"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

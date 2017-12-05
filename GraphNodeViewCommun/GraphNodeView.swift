@@ -83,6 +83,8 @@ class GraphNodeView: CPView {
 	private var scene: SCNScene!
 	private var nodesNode: SCNNode!
 	private var linksNode: SCNNode!
+	private weak var selectedNode: SCNNode?
+	private var selectorNode: SCNNode!
 	
 	struct LinkProperty {
 		enum LineShape {
@@ -222,17 +224,46 @@ extension GraphNodeView {
 		
 		var newAgents: [GKAgent] = []
 		var pos: Float = 0.0
-		for nodeName in nodeNames {
-			let agent = self.createNewAgent()
-			if let previousAgent = self.agents[nodeName] {
-				agent.position3d = previousAgent.position3d
-			} else {
-				agent.position3d = float3(pos, 0, 0)
-				pos += 1.0
+		if self.flatGraph {
+			for nodeName in nodeNames {
+				let agent: GKAgent2D
+				if let previousAgent = self.agents[nodeName] {
+					if let previousAgent2d = previousAgent as? GKAgent2D {
+						agent = previousAgent2d
+						agent.behavior = nil
+					} else {
+						agent = self.createNewAgent() as! GKAgent2D
+						agent.position3d = previousAgent.position3d
+					}
+				} else {
+					agent = self.createNewAgent() as! GKAgent2D
+					agent.position3d = float3(pos, 0, 0)
+					pos += 1.0
+				}
+				self.agents[nodeName] = agent
+				newAgents.append(agent)
 			}
-			self.agents[nodeName] = agent
-			newAgents.append(agent)
+		} else {
+			for nodeName in nodeNames {
+				let agent: GKAgent3D
+				if let previousAgent = self.agents[nodeName] {
+					if let previousAgent3d = previousAgent as? GKAgent3D {
+						agent = previousAgent3d
+						agent.behavior = nil
+					} else {
+						agent = self.createNewAgent() as! GKAgent3D
+						agent.position3d = previousAgent.position3d
+					}
+				} else {
+					agent = self.createNewAgent() as! GKAgent3D
+					agent.position3d = float3(pos, 0, 0)
+					pos += 1.0
+				}
+				self.agents[nodeName] = agent
+				newAgents.append(agent)
+			}
 		}
+
 		
 		for (nodeName, agent) in self.agents {
 			
@@ -305,6 +336,9 @@ extension GraphNodeView {
 		
 		linksNode = SCNNode()
 		scene.rootNode.addChildNode(linksNode)
+		
+		selectorNode = createSelectorNode()
+		scene.rootNode.addChildNode(selectorNode)
 		
 		sceneView.scene = scene
 		sceneView.allowsCameraControl = true
@@ -420,6 +454,12 @@ extension GraphNodeView {
 				}
 			}
 		}
+		if let selectedNode = self.selectedNode {
+			self.selectorNode.isHidden = false
+			self.selectorNode.position = selectedNode.position
+		} else {
+			self.selectorNode.isHidden = false
+		}
 	}
 	
 	private func sceneUpdatePosition(ofNodeNamed name: String) {
@@ -461,6 +501,48 @@ extension GraphNodeView {
 		nodeLink.eulerAngles.x = pitch
 		nodeLink.eulerAngles.z = yaw
 		nodeLink.scale.y = distance - 1.0
+	}
+	
+	private func createSelectorNode() -> SCNNode {
+		let node = SCNNode()
+		
+		let imageRect = CGRect(x: 0, y: 0, width: 100, height: 100)
+		#if os(macOS)
+			let image = NSImage(size: imageRect.size)
+			image.lockFocus()
+			NSColor.white.setFill()
+			NSBezierPath(ovalIn: imageRect).fill()
+			image.unlockFocus()
+		#else
+			UIGraphicsBeginImageContextWithOptions(imageRect.size, false, 1.0)
+			UIColor.white.setFill()
+			UIBezierPath(ovalIn: imageRect).fill()
+			let image = UIGraphicsGetImageFromCurrentImageContext()
+			UIGraphicsEndImageContext()
+		#endif
+		
+		let emitter = SCNParticleSystem()
+		emitter.particleColor = .blue
+		emitter.particleImage = image
+		emitter.emitterShape = SCNSphere(radius: 0.5)
+		emitter.birthRate = 200
+		emitter.birthLocation = .surface
+		emitter.birthDirection = .surfaceNormal
+		emitter.isLocal = true
+		emitter.spreadingAngle = 0
+		emitter.particleAngle = 0
+		emitter.particleAngleVariation = 0
+		emitter.particleLifeSpan = 2.5
+		emitter.particleLifeSpanVariation = 0.5
+		emitter.particleVelocity = 0.1
+		emitter.particleVelocityVariation = 0.1
+		emitter.speedFactor = 1
+		emitter.particleSize = 0.05
+		emitter.particleSizeVariation = 0
+		
+		node.addParticleSystem(emitter)
+		
+		return node
 	}
 }
 
@@ -543,6 +625,7 @@ extension GraphNodeView {
 			}
 			return nil
 		}()
+		self.selectedNode = touchedNode
 		if let touchedNodeName = touchedNode?.name {
 			self.delegate?.graphNodeView(self, selectedNodeNamed: touchedNodeName)
 		}
