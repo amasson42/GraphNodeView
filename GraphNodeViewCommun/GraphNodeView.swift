@@ -458,7 +458,7 @@ extension GraphNodeView {
 			self.selectorNode.isHidden = false
 			self.selectorNode.position = selectedNode.position
 		} else {
-			self.selectorNode.isHidden = false
+			self.selectorNode.isHidden = true
 		}
 	}
 	
@@ -617,7 +617,7 @@ extension GraphNodeView {
 	
 	func touchSceneViewAt(point: CGPoint) {
 		let hits = self.sceneView.hitTest(point, options: [:])
-		let touchedNode: SCNNode? = {
+		self.selectedNode = {
 			for hit in hits {
 				if let node = hit.node.isIn(node: self.nodesNode) {
 					return node
@@ -625,8 +625,7 @@ extension GraphNodeView {
 			}
 			return nil
 		}()
-		self.selectedNode = touchedNode
-		if let touchedNodeName = touchedNode?.name {
+		if let touchedNodeName = self.selectedNode?.name {
 			self.delegate?.graphNodeView(self, selectedNodeNamed: touchedNodeName)
 		}
 	}
