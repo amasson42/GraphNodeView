@@ -1,32 +1,39 @@
 //
 //  ViewController.swift
-//  GraphNodeView
+//  GraphNodeView(iOS)
 //
-//  Created by Arthur Masson on 01/12/2017.
+//  Created by Arthur MASSON on 12/1/17.
 //  Copyright © 2017 Arthur Masson. All rights reserved.
 //
 
-import Cocoa
+import UIKit
 import SceneKit
 
-class ViewController: NSViewController {
-    
+extension UIColor {
+    static func randomColor() -> UIColor {
+        let red: CGFloat = arc4random() % 2 == 0 ? 0.8 : 0.2
+        let green: CGFloat = arc4random() % 2 == 0 ? 0.8 : 0.2
+        let blue: CGFloat = arc4random() % 2 == 0 ? 0.8 : 0.2
+        return UIColor(red: red, green: green, blue: blue, alpha: 1.0)
+    }
+}
+
+class ViewController: UIViewController {
+
     @IBOutlet weak var graphNodeView: GraphNodeView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-    }
-
-    override var representedObject: Any? {
-        didSet {
-        // Update the view, if already loaded.
-        }
+        // Do any additional setup after loading the view, typically from a nib.
     }
     
-    @IBAction func setFlatGraph(_ sender: NSButton) {
-        graphNodeView.flatGraph = sender.state == .on
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    @IBAction func setFlatGraph(_ sender: UISwitch) {
+        self.graphNodeView.flatGraph = sender.isOn
     }
     
     @IBAction func setDataSource(_ sender: Any) {
@@ -58,24 +65,25 @@ extension ViewController: GraphNodeViewDataSource {
     
     func graphNodeView(_ graphNodeView: GraphNodeView, modelForNodeNamed name: String) -> SCNNode {
         let geometry = SCNBox(width: 1.0, height: 1.0, length: 0.2, chamferRadius: 0.1)
-        let color: NSColor
+        let color: UIColor
         switch name {
         case "Alpha":
-            color = NSColor.red
+            color = UIColor.red
         case "Bravo":
-            color = NSColor.green
+            color = UIColor.green
         case "Charlie":
-            color = NSColor.blue
+            color = UIColor.blue
         case "Delta":
-            color = NSColor.yellow
+            color = UIColor.yellow
         default:
-            color = NSColor.randomColor()
+            color = UIColor.randomColor()
         }
         geometry.materials.first?.diffuse.contents = color
         let node = SCNNode(geometry: geometry)
         
         let textGeo = SCNText(string: name, extrusionDepth: 1.0)
-        textGeo.materials.first?.diffuse.contents = color.blended(withFraction: 0.6, of: .black)
+        
+        textGeo.materials.first?.diffuse.contents = color
         let textNode = SCNNode(geometry: textGeo)
         let scaling = SCNFloat(0.5 / textNode.boundingSphere.radius)
         textNode.scale = SCNVector3(x: scaling, y: scaling, z: scaling)
@@ -101,7 +109,7 @@ extension ViewController: GraphNodeViewDataSource {
         case "Delta":
             property.color = .yellow
         default:
-            property.color = NSColor.randomColor()
+            property.color = UIColor.randomColor()
         }
         return property
     }

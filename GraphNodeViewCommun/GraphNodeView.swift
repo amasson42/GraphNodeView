@@ -9,6 +9,13 @@
 import SceneKit
 import GameplayKit
 
+/* TODO: for the next updates
+	- can set a node to a position (data source can tell us where a node shall be at)
+	- can use spritekit instead of scenekit for simple 2D display
+	- create a tableview to display the dictionnary of values from selected node
+	- documentation
+*/
+
 #if os(macOS)
 	typealias CPView = NSView
 	typealias CPColor = NSColor
@@ -71,6 +78,21 @@ class GraphNodeView: CPView {
 	}
 	
 	weak var delegate: GraphNodeViewDelegate?
+	
+	public var selectedNodeName: String? {
+		get {
+			return selectedNode?.name
+		}
+		set {
+			if let nodeName = newValue {
+				if self.nodesNode != nil {
+					self.selectedNode = self.nodesNode.childNode(withName: nodeName, recursively: false)
+				}
+			} else {
+				self.selectedNode = nil
+			}
+		}
+	}
 	
 	// MARK: dataSource informations
 	private var nodeNames: Set<String> = []
@@ -324,6 +346,21 @@ extension SCNNode {
 	}
 }
 
+extension GraphNodeView: SCNSceneRendererDelegate {
+	
+	func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+		let deltaTime: TimeInterval
+		if let lastUpdateTime = self.lastUpdateTime {
+			deltaTime = time - lastUpdateTime
+		} else {
+			deltaTime = 0
+		}
+		self.lastUpdateTime = time
+		self.agentsUpdatePositions(withDeltaTime: deltaTime)
+		self.sceneUpdatePositions()
+	}
+}
+
 extension GraphNodeView {
 	
 	private func initScene() {
@@ -343,7 +380,6 @@ extension GraphNodeView {
 		sceneView.scene = scene
 		sceneView.allowsCameraControl = true
 		sceneView.autoenablesDefaultLighting = true
-		sceneView.showsStatistics = true
 		
 		// MARK: Camera settings
 		let camera = SCNNode()
@@ -376,8 +412,10 @@ extension GraphNodeView {
 	}
 	
 	private func sceneAdd(node: SCNNode, forName name: String) {
-		node.name = name
-		nodesNode.addChildNode(node)
+		let contener = SCNNode()
+		contener.name = name
+		contener.addChildNode(node)
+		nodesNode.addChildNode(contener)
 	}
 	
 	private func sceneAdd(linkFrom nameSrc: String, to nameDst: String) {
@@ -506,41 +544,18 @@ extension GraphNodeView {
 	private func createSelectorNode() -> SCNNode {
 		let node = SCNNode()
 		
-		let imageRect = CGRect(x: 0, y: 0, width: 100, height: 100)
-		#if os(macOS)
-			let image = NSImage(size: imageRect.size)
-			image.lockFocus()
-			NSColor.white.setFill()
-			NSBezierPath(ovalIn: imageRect).fill()
-			image.unlockFocus()
-		#else
-			UIGraphicsBeginImageContextWithOptions(imageRect.size, false, 1.0)
-			UIColor.white.setFill()
-			UIBezierPath(ovalIn: imageRect).fill()
-			let image = UIGraphicsGetImageFromCurrentImageContext()
-			UIGraphicsEndImageContext()
-		#endif
-		
-		let emitter = SCNParticleSystem()
-		emitter.particleColor = .blue
-		emitter.particleImage = image
-		emitter.emitterShape = SCNSphere(radius: 0.5)
-		emitter.birthRate = 200
-		emitter.birthLocation = .surface
-		emitter.birthDirection = .surfaceNormal
-		emitter.isLocal = true
-		emitter.spreadingAngle = 0
-		emitter.particleAngle = 0
-		emitter.particleAngleVariation = 0
-		emitter.particleLifeSpan = 2.5
-		emitter.particleLifeSpanVariation = 0.5
-		emitter.particleVelocity = 0.1
-		emitter.particleVelocityVariation = 0.1
-		emitter.speedFactor = 1
-		emitter.particleSize = 0.05
-		emitter.particleSizeVariation = 0
-		
-		node.addParticleSystem(emitter)
+		let scaler1 = SCNNode()
+		scaler1.scale = SCNVector3(x: 0.1, y: 0.5, z: 0.1)
+		scaler1.runAction(.repeatForever(.rotateBy(x: 0, y: .pi / 6, z: 0, duration: 1.0)))
+		scaler1.runAction(.repeatForever(.rotateBy(x: 2 * .pi / 3, y: 0, z: .pi / -4, duration: 1.0)))
+		scaler1.addChildNode(SCNNode(geometry: SCNTorus(ringRadius: 6.5, pipeRadius: 0.25)))
+		node.addChildNode(scaler1)
+		let scaler2 = SCNNode()
+		scaler2.scale = SCNVector3(x: 0.1, y: 0.3, z: 0.1)
+		scaler2.runAction(.repeatForever(.rotateBy(x: 0, y: -.pi / 6, z: 0, duration: 0.4)))
+		scaler2.runAction(.repeatForever(.rotateBy(x: -.pi / 8, y: 0, z: .pi / 4, duration: 0.7)))
+		scaler2.addChildNode(SCNNode(geometry: SCNTorus(ringRadius: 6, pipeRadius: 0.25)))
+		node.addChildNode(scaler2)
 		
 		return node
 	}
@@ -653,17 +668,21 @@ extension GraphNodeView {
 	}
 #endif
 
-extension GraphNodeView: SCNSceneRendererDelegate {
+// MARK: Visual functionnalities
+extension GraphNodeView {
 	
-	func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-		let deltaTime: TimeInterval
-		if let lastUpdateTime = self.lastUpdateTime {
-			deltaTime = time - lastUpdateTime
-		} else {
-			deltaTime = 0
+	func sendVisualSignal(withModel model: SCNNode, fromNodeNamed srcName: String, toNodeNamed dstName: String, duration: TimeInterval = 1.0) {
+		guard let srcNode = self.nodesNode.childNode(withName: srcName, recursively: false),
+			let dstNode = self.nodesNode.childNode(withName: dstName, recursively: false) else {
+			return
 		}
-		self.lastUpdateTime = time
-		self.agentsUpdatePositions(withDeltaTime: deltaTime)
-		self.sceneUpdatePositions()
+		model.position = SCNVector3(x: srcNode.position.x - dstNode.position.x,
+									y: srcNode.position.y - dstNode.position.y,
+									z: srcNode.position.z - dstNode.position.z)
+		dstNode.addChildNode(model)
+		model.runAction(.sequence([
+			.move(to: SCNVector3Zero, duration: duration),
+			.removeFromParentNode()
+			]))
 	}
 }

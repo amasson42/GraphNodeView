@@ -749,8 +749,47 @@
                                     <action selector="setFlatGraph:" target="XfG-lQ-9wD" id="g5g-Br-aGU"/>
                                 </connections>
                             </button>
+                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ekx-B2-6Lm">
+                                <rect key="frame" x="10" y="8" width="96" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="96" id="sQC-Qm-Rp5"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="sender" drawsBackground="YES" id="Rkh-Mw-YTj">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wh2-kw-2n0">
+                                <rect key="frame" x="114" y="8" width="96" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="96" id="sVi-YZ-eZm"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="target" drawsBackground="YES" id="SWC-4m-3ee">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yHV-aZ-bGd">
+                                <rect key="frame" x="212" y="1" width="112" height="32"/>
+                                <buttonCell key="cell" type="push" title="Send Signal" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ADI-My-McA">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="sendVisualSignal:" target="XfG-lQ-9wD" id="KvR-wS-t9m"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="wh2-kw-2n0" firstAttribute="leading" secondItem="ekx-B2-6Lm" secondAttribute="trailing" constant="8" id="3Zz-0k-6sf"/>
+                            <constraint firstItem="yHV-aZ-bGd" firstAttribute="leading" secondItem="wh2-kw-2n0" secondAttribute="trailing" constant="8" id="Fyx-p6-KfT"/>
+                            <constraint firstItem="ekx-B2-6Lm" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="10" id="GiI-3o-LDi"/>
+                            <constraint firstAttribute="bottom" secondItem="yHV-aZ-bGd" secondAttribute="bottom" constant="8" id="JzT-br-of5"/>
+                            <constraint firstAttribute="bottom" secondItem="wh2-kw-2n0" secondAttribute="bottom" constant="8" id="NG8-yG-ld2"/>
+                            <constraint firstAttribute="bottom" secondItem="ekx-B2-6Lm" secondAttribute="bottom" constant="8" id="ROq-9N-UgG"/>
+                            <constraint firstItem="Akl-rk-und" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="yHV-aZ-bGd" secondAttribute="trailing" constant="10" id="UEq-do-Tpn"/>
                             <constraint firstItem="Akl-rk-und" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" id="Xwj-8k-sRq"/>
                             <constraint firstItem="Akl-rk-und" firstAttribute="top" secondItem="rLn-TY-KWV" secondAttribute="bottom" constant="10" id="ZQx-uC-kYy"/>
                             <constraint firstItem="Y1q-Pl-tir" firstAttribute="leading" secondItem="Akl-rk-und" secondAttribute="trailing" constant="8" id="bje-t3-MYW"/>
@@ -764,6 +803,8 @@
                     </view>
                     <connections>
                         <outlet property="graphNodeView" destination="18F-ev-6ge" id="hjk-kQ-uDa"/>
+                        <outlet property="senderField" destination="ekx-B2-6Lm" id="hZ2-Tj-gTp"/>
+                        <outlet property="targetField" destination="wh2-kw-2n0" id="JVn-D2-SIb"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

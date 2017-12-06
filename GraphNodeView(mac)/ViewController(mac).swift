@@ -1,39 +1,74 @@
 //
 //  ViewController.swift
-//  GraphNodeView(iOS)
+//  GraphNodeView
 //
-//  Created by Arthur MASSON on 12/1/17.
+//  Created by Arthur Masson on 01/12/2017.
 //  Copyright © 2017 Arthur Masson. All rights reserved.
 //
 
-import UIKit
+import Cocoa
 import SceneKit
 
-extension UIColor {
-    static func randomColor() -> UIColor {
-        let red: CGFloat = arc4random() % 2 == 0 ? 0.8 : 0.2
-        let green: CGFloat = arc4random() % 2 == 0 ? 0.8 : 0.2
-        let blue: CGFloat = arc4random() % 2 == 0 ? 0.8 : 0.2
-        return UIColor(red: red, green: green, blue: blue, alpha: 1.0)
-    }
-}
-
-class ViewController: UIViewController {
-
+class ViewController: NSViewController {
+    
     @IBOutlet weak var graphNodeView: GraphNodeView!
+    @IBOutlet weak var senderField: NSTextField!
+    @IBOutlet weak var targetField: NSTextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+
+        // Do any additional setup after loading the view.
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override var representedObject: Any? {
+        didSet {
+        // Update the view, if already loaded.
+        }
     }
     
-    @IBAction func setFlatGraph(_ sender: UISwitch) {
-        self.graphNodeView.flatGraph = sender.isOn
+    @IBAction func sendVisualSignal(_ sender: Any) {
+        let node = SCNNode()
+        
+        let imageRect = CGRect(x: 0, y: 0, width: 100, height: 100)
+        #if os(macOS)
+            let image = NSImage(size: imageRect.size)
+            image.lockFocus()
+            NSColor.white.setFill()
+            NSBezierPath(ovalIn: imageRect).fill()
+            image.unlockFocus()
+        #else
+            UIGraphicsBeginImageContextWithOptions(imageRect.size, false, 1.0)
+            UIColor.white.setFill()
+            UIBezierPath(ovalIn: imageRect).fill()
+            let image = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+        #endif
+        
+        let emitter = SCNParticleSystem()
+        emitter.particleColor = .blue
+        emitter.particleImage = image
+        emitter.emitterShape = SCNSphere(radius: 0.2)
+        emitter.birthRate = 200
+        emitter.birthLocation = .surface
+        emitter.birthDirection = .surfaceNormal
+        emitter.spreadingAngle = 0
+        emitter.particleAngle = 0
+        emitter.particleAngleVariation = 0
+        emitter.particleLifeSpan = 2.5
+        emitter.particleLifeSpanVariation = 0.5
+        emitter.particleVelocity = 0.1
+        emitter.particleVelocityVariation = 0.1
+        emitter.speedFactor = 1
+        emitter.particleSize = 0.05
+        emitter.particleSizeVariation = 0
+        
+        node.addParticleSystem(emitter)
+        self.graphNodeView.sendVisualSignal(withModel: node, fromNodeNamed: self.senderField.stringValue, toNodeNamed: self.targetField.stringValue)
+    }
+    
+    @IBAction func setFlatGraph(_ sender: NSButton) {
+        graphNodeView.flatGraph = sender.state == .on
     }
     
     @IBAction func setDataSource(_ sender: Any) {
@@ -65,25 +100,24 @@ extension ViewController: GraphNodeViewDataSource {
     
     func graphNodeView(_ graphNodeView: GraphNodeView, modelForNodeNamed name: String) -> SCNNode {
         let geometry = SCNBox(width: 1.0, height: 1.0, length: 0.2, chamferRadius: 0.1)
-        let color: UIColor
+        let color: NSColor
         switch name {
         case "Alpha":
-            color = UIColor.red
+            color = NSColor.red
         case "Bravo":
-            color = UIColor.green
+            color = NSColor.green
         case "Charlie":
-            color = UIColor.blue
+            color = NSColor.blue
         case "Delta":
-            color = UIColor.yellow
+            color = NSColor.yellow
         default:
-            color = UIColor.randomColor()
+            color = NSColor.randomColor()
         }
         geometry.materials.first?.diffuse.contents = color
         let node = SCNNode(geometry: geometry)
         
         let textGeo = SCNText(string: name, extrusionDepth: 1.0)
-        
-        textGeo.materials.first?.diffuse.contents = color
+        textGeo.materials.first?.diffuse.contents = color.blended(withFraction: 0.6, of: .black)
         let textNode = SCNNode(geometry: textGeo)
         let scaling = SCNFloat(0.5 / textNode.boundingSphere.radius)
         textNode.scale = SCNVector3(x: scaling, y: scaling, z: scaling)
@@ -109,7 +143,7 @@ extension ViewController: GraphNodeViewDataSource {
         case "Delta":
             property.color = .yellow
         default:
-            property.color = UIColor.randomColor()
+            property.color = NSColor.randomColor()
         }
         return property
     }
@@ -118,6 +152,5 @@ extension ViewController: GraphNodeViewDataSource {
 extension ViewController: GraphNodeViewDelegate {
     func graphNodeView(_ graphNodeView: GraphNodeView, selectedNodeNamed name: String) {
         print("touched node named:", name)
-        self.graphNodeView.reloadNode(named: name)
     }
 }
