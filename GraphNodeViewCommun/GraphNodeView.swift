@@ -25,7 +25,7 @@ let AutoResizingMaskFlexibleWidthAndHeight: NSView.AutoresizingMask = [.width, .
 let AutoResizingMaskFlexibleWidthAndHeight: UIViewAutoresizing = [.flexibleWidth, .flexibleHeight]
 #endif
 
-@available(OSX 10.11, *)
+@available(OSX 10.11, iOS 9.0, *)
 protocol GraphNodeViewDataSource: class {
 	func namesOfAllNodes(in graphNodeView: GraphNodeView) -> Set<String>
 	func graphNodeView(_ graphNodeView: GraphNodeView, linksForNodeNamed: String) -> Set<String>
@@ -35,7 +35,7 @@ protocol GraphNodeViewDataSource: class {
 	func graphNodeView(_ graphNodeView: GraphNodeView, linkPropertyForLinkFromNodeNamed: String, toNodeNamed: String) -> GraphNodeView.LinkProperty?
 }
 
-@available(OSX 10.11, *)
+@available(OSX 10.11, iOS 9.0, *)
 extension GraphNodeViewDataSource {
 	func graphNodeView(_ graphNodeView: GraphNodeView, modelForNodeNamed name: String) -> SCNNode {
 		let geometry = SCNSphere(radius: 0.5)
@@ -58,19 +58,19 @@ extension GraphNodeViewDataSource {
 	}
 }
 
-@available(OSX 10.11, *)
+@available(OSX 10.11, iOS 9.0, *)
 protocol GraphNodeViewDelegate: class {
 	func graphNodeView(_ graphNodeView: GraphNodeView, selectedNodeNamed name: String)
 }
 
-@available(OSX 10.11, *)
+@available(OSX 10.11, iOS 9.0, *)
 extension GraphNodeViewDelegate {
 	func graphNodeView(_ graphNodeView: GraphNodeView, selectedNodeNamed name: String) {
 		
 	}
 }
 
-@available(OSX 10.11, *)
+@available(OSX 10.11, iOS 9.0, *)
 class GraphNodeView: CPView {
 	
 	struct Constants {
@@ -179,7 +179,7 @@ class GraphNodeView: CPView {
 }
 
 // MARK: Content using
-@available(OSX 10.11, *)
+@available(OSX 10.11, iOS 9.0, *)
 extension GraphNodeView {
 	
 	private func initContent() {
@@ -208,7 +208,7 @@ extension GraphNodeView {
 }
 
 // MARK: All of GameplayKit
-@available(OSX 10.11, *)
+@available(OSX 10.11, iOS 9.0, *)
 extension GKAgent {
 	var position3d: float3 {
 		get {
@@ -231,7 +231,7 @@ extension GKAgent {
 	}
 }
 
-@available(OSX 10.11, *)
+@available(OSX 10.11, iOS 9.0, *)
 extension GraphNodeView {
 	
 	private func initAgents() {
@@ -364,7 +364,7 @@ extension SCNNode {
 	}
 }
 
-@available(OSX 10.11, *)
+@available(OSX 10.11, iOS 9.0, *)
 extension GraphNodeView: SCNSceneRendererDelegate {
 	
 	func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
@@ -380,7 +380,7 @@ extension GraphNodeView: SCNSceneRendererDelegate {
 	}
 }
 
-@available(OSX 10.11, *)
+@available(OSX 10.11, iOS 9.0, *)
 extension GraphNodeView {
 	
 	private func initScene() {
@@ -575,7 +575,7 @@ extension GraphNodeView {
 }
 
 // MARK: Calls to datasource
-@available(OSX 10.11, *)
+@available(OSX 10.11, iOS 9.0, *)
 extension GraphNodeView {
 	
 	/**
@@ -643,7 +643,7 @@ extension GraphNodeView {
 
 // MARK: Calls to delegate
 
-@available(OSX 10.11, *)
+@available(OSX 10.11, iOS 9.0, *)
 extension GraphNodeView {
 	
 	func touchSceneViewAt(point: CGPoint) {
@@ -674,6 +674,7 @@ extension GraphNodeView {
 	}
 #elseif os(iOS)
 	// MARK: Events iOS
+	@available(iOS 9.0, *)
 	extension GraphNodeView {
 		
 		@objc func handleTap(_ gestureReconizer: UIGestureRecognizer) {
@@ -684,7 +685,7 @@ extension GraphNodeView {
 #endif
 
 // MARK: Visual functionnalities
-@available(OSX 10.11, *)
+@available(OSX 10.11, iOS 9.0, *)
 extension GraphNodeView {
 	
 	func sendVisualSignal(withModel model: SCNNode,
