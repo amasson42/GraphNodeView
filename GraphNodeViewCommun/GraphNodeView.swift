@@ -10,21 +10,22 @@ import SceneKit
 import GameplayKit
 
 /* TODO: for the next updates
-	- can use spritekit instead of scenekit for simple 2D display
-	- create a tableview to display the dictionnary of values from selected node
-	- documentation
+- can use spritekit instead of scenekit for simple 2D display
+- create a tableview to display the dictionnary of values from selected node
+- documentation
 */
 
 #if os(macOS)
 	typealias CPView = NSView
 	typealias CPColor = NSColor
-	let AutoResizingMaskFlexibleWidthAndHeight: NSView.AutoresizingMask = [.width, .height]
+let AutoResizingMaskFlexibleWidthAndHeight: NSView.AutoresizingMask = [.width, .height]
 #else
 	typealias CPView = UIView
 	typealias CPColor = UIColor
-	let AutoResizingMaskFlexibleWidthAndHeight: UIViewAutoresizing = [.flexibleWidth, .flexibleHeight]
+let AutoResizingMaskFlexibleWidthAndHeight: UIViewAutoresizing = [.flexibleWidth, .flexibleHeight]
 #endif
 
+@available(OSX 10.11, *)
 protocol GraphNodeViewDataSource: class {
 	func namesOfAllNodes(in graphNodeView: GraphNodeView) -> Set<String>
 	func graphNodeView(_ graphNodeView: GraphNodeView, linksForNodeNamed: String) -> Set<String>
@@ -34,6 +35,7 @@ protocol GraphNodeViewDataSource: class {
 	func graphNodeView(_ graphNodeView: GraphNodeView, linkPropertyForLinkFromNodeNamed: String, toNodeNamed: String) -> GraphNodeView.LinkProperty?
 }
 
+@available(OSX 10.11, *)
 extension GraphNodeViewDataSource {
 	func graphNodeView(_ graphNodeView: GraphNodeView, modelForNodeNamed name: String) -> SCNNode {
 		let geometry = SCNSphere(radius: 0.5)
@@ -56,16 +58,19 @@ extension GraphNodeViewDataSource {
 	}
 }
 
+@available(OSX 10.11, *)
 protocol GraphNodeViewDelegate: class {
 	func graphNodeView(_ graphNodeView: GraphNodeView, selectedNodeNamed name: String)
 }
 
+@available(OSX 10.11, *)
 extension GraphNodeViewDelegate {
 	func graphNodeView(_ graphNodeView: GraphNodeView, selectedNodeNamed name: String) {
 		
 	}
 }
 
+@available(OSX 10.11, *)
 class GraphNodeView: CPView {
 	
 	struct Constants {
@@ -174,6 +179,7 @@ class GraphNodeView: CPView {
 }
 
 // MARK: Content using
+@available(OSX 10.11, *)
 extension GraphNodeView {
 	
 	private func initContent() {
@@ -202,6 +208,7 @@ extension GraphNodeView {
 }
 
 // MARK: All of GameplayKit
+@available(OSX 10.11, *)
 extension GKAgent {
 	var position3d: float3 {
 		get {
@@ -224,6 +231,7 @@ extension GKAgent {
 	}
 }
 
+@available(OSX 10.11, *)
 extension GraphNodeView {
 	
 	private func initAgents() {
@@ -356,6 +364,7 @@ extension SCNNode {
 	}
 }
 
+@available(OSX 10.11, *)
 extension GraphNodeView: SCNSceneRendererDelegate {
 	
 	func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
@@ -371,6 +380,7 @@ extension GraphNodeView: SCNSceneRendererDelegate {
 	}
 }
 
+@available(OSX 10.11, *)
 extension GraphNodeView {
 	
 	private func initScene() {
@@ -394,7 +404,7 @@ extension GraphNodeView {
 		// MARK: Camera settings
 		let camera = SCNNode()
 		camera.camera = SCNCamera()
-		camera.position.z = 10
+		camera.position.z = 20
 		scene.rootNode.addChildNode(camera)
 		sceneView.pointOfView = camera
 	}
@@ -513,7 +523,7 @@ extension GraphNodeView {
 	private func sceneUpdatePosition(ofNodeNamed name: String) {
 		guard let node = self.nodesNode.childNode(withName: name, recursively: false),
 			let agent = self.agents[name] else {
-			return
+				return
 		}
 		let agentPosition = agent.position3d
 		node.position = SCNVector3(agentPosition.x, agentPosition.y, agentPosition.z)
@@ -565,10 +575,11 @@ extension GraphNodeView {
 }
 
 // MARK: Calls to datasource
+@available(OSX 10.11, *)
 extension GraphNodeView {
 	
 	/**
-		Clear and reload every informations from the dataSource
+	Clear and reload every informations from the dataSource
 	*/
 	public func reloadData() {
 		
@@ -592,6 +603,9 @@ extension GraphNodeView {
 			}
 		}
 		self.createContent()
+		for _ in 0...1000 {
+			self.agentsUpdatePositions(withDeltaTime: 0.1)
+		}
 	}
 	
 	public func reloadNode(named nodeName: String) {
@@ -629,6 +643,7 @@ extension GraphNodeView {
 
 // MARK: Calls to delegate
 
+@available(OSX 10.11, *)
 extension GraphNodeView {
 	
 	func touchSceneViewAt(point: CGPoint) {
@@ -647,8 +662,9 @@ extension GraphNodeView {
 	}
 }
 
-// MARK: Events macOS
 #if os(macOS)
+	// MARK: Events macOS
+	@available(OSX 10.11, *)
 	extension GraphNodeView {
 		
 		@objc func handleClick(_ gestureReconizer: NSGestureRecognizer) {
@@ -656,10 +672,8 @@ extension GraphNodeView {
 			self.touchSceneViewAt(point: position)
 		}
 	}
-#endif
-
-// MARK: Events iOS
-#if os(iOS)
+#elseif os(iOS)
+	// MARK: Events iOS
 	extension GraphNodeView {
 		
 		@objc func handleTap(_ gestureReconizer: UIGestureRecognizer) {
@@ -670,12 +684,18 @@ extension GraphNodeView {
 #endif
 
 // MARK: Visual functionnalities
+@available(OSX 10.11, *)
 extension GraphNodeView {
 	
-	func sendVisualSignal(withModel model: SCNNode, fromNodeNamed srcName: String, toNodeNamed dstName: String, duration: TimeInterval = 1.0) {
+	func sendVisualSignal(withModel model: SCNNode,
+						  fromNodeNamed srcName: String,
+						  toNodeNamed dstName: String,
+						  duration: TimeInterval = 1.0,
+						  completionHandler: (() -> Void)? = nil) {
+		
 		guard let srcNode = self.nodesNode.childNode(withName: srcName, recursively: false),
 			let dstNode = self.nodesNode.childNode(withName: dstName, recursively: false) else {
-			return
+				return
 		}
 		model.position = SCNVector3(x: srcNode.position.x - dstNode.position.x,
 									y: srcNode.position.y - dstNode.position.y,
@@ -684,6 +704,6 @@ extension GraphNodeView {
 		model.runAction(.sequence([
 			.move(to: SCNVector3Zero, duration: duration),
 			.removeFromParentNode()
-			]))
+			]), completionHandler: completionHandler)
 	}
 }
