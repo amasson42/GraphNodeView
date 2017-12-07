@@ -28,7 +28,7 @@ class ViewController: NSViewController {
     }
     
     @IBAction func sendVisualSignal(_ sender: Any) {
-        let node = SCNNode()
+        let node = SCNNode(geometry: SCNSphere(radius: 0.5))
         
         let imageRect = CGRect(x: 0, y: 0, width: 100, height: 100)
         #if os(macOS)
@@ -146,6 +146,17 @@ extension ViewController: GraphNodeViewDataSource {
             property.color = NSColor.randomColor()
         }
         return property
+    }
+    
+    func graphNodeView(_ graphNodeView: GraphNodeView, positionForNodeNamed name: String) -> SCNVector3? {
+        switch name {
+        case "Alpha":
+            return SCNVector3(-1, 0, 0)
+        case "Bravo":
+            return SCNVector3(2, 1, 0)
+        default:
+            return nil
+        }
     }
 }
 

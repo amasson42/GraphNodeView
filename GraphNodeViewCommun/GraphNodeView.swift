@@ -10,7 +10,6 @@ import SceneKit
 import GameplayKit
 
 /* TODO: for the next updates
-	- can set a node to a position (data source can tell us where a node shall be at)
 	- can use spritekit instead of scenekit for simple 2D display
 	- create a tableview to display the dictionnary of values from selected node
 	- documentation
@@ -30,6 +29,7 @@ protocol GraphNodeViewDataSource: class {
 	func namesOfAllNodes(in graphNodeView: GraphNodeView) -> Set<String>
 	func graphNodeView(_ graphNodeView: GraphNodeView, linksForNodeNamed: String) -> Set<String>
 	func graphNodeView(_ graphNodeView: GraphNodeView, modelForNodeNamed: String) -> SCNNode
+	func graphNodeView(_ graphNodeView: GraphNodeView, positionForNodeNamed: String) -> SCNVector3?
 	func graphNodeView(_ graphNodeView: GraphNodeView, informationAboutNodeNamed: String) -> [String: Any]
 	func graphNodeView(_ graphNodeView: GraphNodeView, linkPropertyForLinkFromNodeNamed: String, toNodeNamed: String) -> GraphNodeView.LinkProperty?
 }
@@ -39,6 +39,10 @@ extension GraphNodeViewDataSource {
 		let geometry = SCNSphere(radius: 0.5)
 		let node = SCNNode(geometry: geometry)
 		return node
+	}
+	
+	func graphNodeView(_ graphNodeView: GraphNodeView, positionForNodeNamed name: String) -> SCNVector3? {
+		return nil
 	}
 	
 	func graphNodeView(_ graphNodeView: GraphNodeView, informationAboutNodeNamed name: String) -> [String: Any] {
@@ -65,7 +69,8 @@ extension GraphNodeViewDelegate {
 class GraphNodeView: CPView {
 	
 	struct Constants {
-		static let distanceBetweenNodes: Float = 10.0
+		static let preferedDistanceBetweenNodes: Float = 10.0
+		static let startingDistanceBetweenNodes: Float = 1.0
 		static let arrowHeadPercentOccupation: Float = 0.1
 		static let linkerChar = "-"
 		private init() {}
@@ -96,8 +101,9 @@ class GraphNodeView: CPView {
 	
 	// MARK: dataSource informations
 	private var nodeNames: Set<String> = []
-	private var nodeModels: [String: SCNNode] = [:]
 	private var linksNames: [String: Set<String>] = [:]
+	private var nodeModels: [String: SCNNode] = [:]
+	private var nodePositions: [String: SCNVector3] = [:]
 	
 	// MARK: Scene uses
 	private var lastUpdateTime: TimeInterval?
@@ -176,9 +182,10 @@ extension GraphNodeView {
 	}
 	
 	private func clearContent() {
-		self.nodeNames = []
-		self.nodeModels = [:]
-		self.linksNames = [:]
+		self.nodeNames.removeAll()
+		self.nodeModels.removeAll()
+		self.nodePositions.removeAll()
+		self.linksNames.removeAll()
 		self.clearScene()
 		self.clearAgents()
 	}
@@ -236,7 +243,7 @@ extension GraphNodeView {
 			let agent3d = GKAgent3D()
 			agent = agent3d
 		}
-		agent.radius = Constants.distanceBetweenNodes
+		agent.radius = Constants.preferedDistanceBetweenNodes
 		return agent
 	}
 	
@@ -260,7 +267,7 @@ extension GraphNodeView {
 				} else {
 					agent = self.createNewAgent() as! GKAgent2D
 					agent.position3d = float3(pos, 0, 0)
-					pos += 1.0
+					pos += Constants.startingDistanceBetweenNodes
 				}
 				self.agents[nodeName] = agent
 				newAgents.append(agent)
@@ -279,39 +286,42 @@ extension GraphNodeView {
 				} else {
 					agent = self.createNewAgent() as! GKAgent3D
 					agent.position3d = float3(pos, 0, 0)
-					pos += 1.0
+					pos += Constants.startingDistanceBetweenNodes
 				}
 				self.agents[nodeName] = agent
 				newAgents.append(agent)
 			}
 		}
-
 		
 		for (nodeName, agent) in self.agents {
 			
-			let separateGoal = GKGoal(toSeparateFrom: newAgents,
-									  maxDistance: Constants.distanceBetweenNodes,
-									  maxAngle: .pi * 2)
-			let idleGoal = GKGoal(toReachTargetSpeed: 0)
-			let compactingGoal = GKGoal(toSeekAgent: originAgent)
-			
-			var linksAgentsGoal: [GKGoal] = []
-			for link in self.linksNames[nodeName] ?? [] {
-				if let linkAgent = self.agents[link] {
-					linksAgentsGoal.append(GKGoal(toSeekAgent: linkAgent))
+			if let position = self.nodePositions[nodeName] {
+				agent.position3d = float3(Float(position.x), Float(position.y), Float(position.z))
+			} else {
+				let separateGoal = GKGoal(toSeparateFrom: newAgents,
+										  maxDistance: Constants.preferedDistanceBetweenNodes,
+										  maxAngle: .pi * 2)
+				let idleGoal = GKGoal(toReachTargetSpeed: 0)
+				let compactingGoal = GKGoal(toSeekAgent: originAgent)
+				var linksAgentsGoal: [GKGoal] = []
+				for link in self.linksNames[nodeName] ?? [] {
+					if let linkAgent = self.agents[link] {
+						linksAgentsGoal.append(GKGoal(toSeekAgent: linkAgent))
+					}
 				}
+				
+				// MARK: Behavior constants
+				let behavior = GKBehavior(weightedGoals: [
+					separateGoal: 10.0,
+					idleGoal: 1.0,
+					compactingGoal: 2.0,
+					])
+				for seekGoal in linksAgentsGoal {
+					behavior.setWeight(0.4, for: seekGoal)
+				}
+				agent.behavior = behavior
 			}
 			
-			// MARK: Behavior constants
-			let behavior = GKBehavior(weightedGoals: [
-				separateGoal: 10.0,
-				idleGoal: 1.0,
-				compactingGoal: 2.0,
-				])
-			for seekGoal in linksAgentsGoal {
-				behavior.setWeight(0.4, for: seekGoal)
-			}
-			agent.behavior = behavior
 		}
 		
 	}
@@ -505,15 +515,8 @@ extension GraphNodeView {
 			let agent = self.agents[name] else {
 			return
 		}
-		if let agent2d = agent as? GKAgent2D {
-			node.position = SCNVector3(x: SCNFloat(agent2d.position.x),
-									   y: SCNFloat(agent2d.position.y),
-									   z: 0)
-		} else if let agent3d = agent as? GKAgent3D {
-			node.position = SCNVector3(x: SCNFloat(agent3d.position.x),
-									   y: SCNFloat(agent3d.position.y),
-									   z: SCNFloat(agent3d.position.z))
-		}
+		let agentPosition = agent.position3d
+		node.position = SCNVector3(agentPosition.x, agentPosition.y, agentPosition.z)
 	}
 	
 	private func sceneUpdatePosition(ofLinkFromNodeNamed nameSrc: String, toNodeNamed nameDst: String) {
@@ -576,10 +579,8 @@ extension GraphNodeView {
 		}
 		self.nodeNames = dataSource.namesOfAllNodes(in: self)
 		for nodeName in nodeNames {
-			let node = dataSource.graphNodeView(self, modelForNodeNamed: nodeName)
-			self.nodeModels[nodeName] = node
-		}
-		for nodeName in nodeNames {
+			self.nodeModels[nodeName] = dataSource.graphNodeView(self, modelForNodeNamed: nodeName)
+			self.nodePositions[nodeName] = dataSource.graphNodeView(self, positionForNodeNamed: nodeName)
 			let linkNames = dataSource.graphNodeView(self, linksForNodeNamed: nodeName)
 			self.linksNames[nodeName] = linkNames
 			for linkName in linkNames {
@@ -609,8 +610,8 @@ extension GraphNodeView {
 			}
 		}
 		
-		let node = dataSource.graphNodeView(self, modelForNodeNamed: nodeName)
-		self.nodeModels[nodeName] = node
+		self.nodeModels[nodeName] = dataSource.graphNodeView(self, modelForNodeNamed: nodeName)
+		self.nodePositions[nodeName] = dataSource.graphNodeView(self, positionForNodeNamed: nodeName)
 		
 		let linkNames = dataSource.graphNodeView(self, linksForNodeNamed: nodeName)
 		self.linksNames[nodeName] = linkNames
