@@ -51,7 +51,6 @@
                     </view>
                     <connections>
                         <outlet property="graphNodeView" destination="3Aq-MB-TIB" id="3LG-Nf-Pzj"/>
-                        <outlet property="lol" destination="jAV-hz-fwy" id="lQg-Ai-gQN"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

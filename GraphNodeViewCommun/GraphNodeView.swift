@@ -16,13 +16,11 @@ import GameplayKit
 */
 
 #if os(macOS)
-	typealias CPView = NSView
-	typealias CPColor = NSColor
-let AutoResizingMaskFlexibleWidthAndHeight: NSView.AutoresizingMask = [.width, .height]
+	typealias UIView = NSView
+	typealias UIColor = NSColor
+	let AutoResizingMaskFlexibleWidthAndHeight: NSView.AutoresizingMask = [.width, .height]
 #else
-	typealias CPView = UIView
-	typealias CPColor = UIColor
-let AutoResizingMaskFlexibleWidthAndHeight: UIViewAutoresizing = [.flexibleWidth, .flexibleHeight]
+	let AutoResizingMaskFlexibleWidthAndHeight: UIViewAutoresizing = [.flexibleWidth, .flexibleHeight]
 #endif
 
 @available(OSX 10.11, iOS 9.0, *)
@@ -71,7 +69,7 @@ extension GraphNodeViewDelegate {
 }
 
 @available(OSX 10.11, iOS 9.0, *)
-class GraphNodeView: CPView {
+class GraphNodeView: UIView {
 	
 	struct Constants {
 		static let preferedDistanceBetweenNodes: Float = 10.0
@@ -127,7 +125,7 @@ class GraphNodeView: CPView {
 		}
 		var lineShape: LineShape = .round
 		var lineWidth: Float = 0.1
-		var color: CPColor = .white
+		var color: UIColor = .white
 		var arrowShaped: Bool = false
 		var startingDistance: Float = 0.0
 		var endingDistance: Float = 1.0
@@ -386,7 +384,7 @@ extension GraphNodeView {
 	private func initScene() {
 		
 		scene = SCNScene()
-		scene.background.contents = CPColor.black
+		scene.background.contents = UIColor.black
 		
 		nodesNode = SCNNode()
 		scene.rootNode.addChildNode(nodesNode)
